@@ -1,6 +1,6 @@
 //! openseadragon 5.1.0
 //! Built on 2026-06-06
-//! Git commit: v5.1.0-28-3c34ba38
+//! Git commit: v5.1.0-29-02865c68-dirty
 //! https://github.com/dao251/openseadragon
 //! License: https://raw.githubusercontent.com/dao251/openseadragon/main/license.txt
 
@@ -2975,8 +2975,13 @@ $.Utils = class {
         // Get current rendered box
         const rect = el.getBoundingClientRect();
         // Compute aligned CSS pixel coordinates
-        const snappedLeft = Math.round(rect.left * dpr) / dpr;
-        const snappedTop = Math.round(rect.top * dpr) / dpr;
+        let snappedLeft = Math.round(rect.left * dpr) / dpr;
+        let snappedTop = Math.round(rect.top * dpr) / dpr;
+        // === Quantize to exact DPR grid ===
+        // This removes float noise like 0.09999984
+        const q = 1 / dpr; // CSS pixel step that maps to 1 device pixel
+        snappedLeft = Math.round(snappedLeft / q) * q;
+        snappedTop = Math.round(snappedTop / q) * q;
         // Apply correction offset
         const dx = snappedLeft - rect.left;
         const dy = snappedTop - rect.top;
