@@ -1,5 +1,5 @@
 //! openseadragon 5.1.0
-//! Built on 2026-06-05
+//! Built on 2026-06-06
 //! Git commit: v5.1.0-26-6a750b7b-dirty
 //! https://github.com/dao251/openseadragon
 //! License: https://raw.githubusercontent.com/dao251/openseadragon/main/license.txt
@@ -2985,7 +2985,7 @@ $.Utils = class {
         // if (Math.abs(dx) < EPS && Math.abs(dy) < EPS) {
         //     return; // already aligned
         // }
-        // Apply via transform (safe, non‑layout‑breaking)
+        // // Apply via transform (safe, non‑layout‑breaking)
         const prev = getComputedStyle(el).transform;
         const base = prev === "none" ? "" : prev;
         el.style.transform = `${base} translate(${dx}px, ${dy}px)`;
@@ -22947,12 +22947,13 @@ function getComposite( tiledImage, level ) {
     const levelScale = 2 ** ( maxLevel - level );
 
     // drawArea Rectangle in image pixels (expanded to integer boundaries)
-    let imgDrawArea = drawArea.times(imgSize.x).ceil();
+    // let imgDrawArea = drawArea.times(imgSize.x).ceil();
+    let imgDrawArea = drawArea.times(imgSize.x).apply(Math.round);
 
     // clip here
     const imgClip = tiledImage.getClip();
     if( imgClip ){
-        imgDrawArea = imgDrawArea.intersection(imgClip.ceil()); //ceil for safety
+        imgDrawArea = imgDrawArea.intersection(imgClip.apply(Math.round));
     }
 
     // flip
@@ -23201,7 +23202,7 @@ $.Drawer = class extends OpenSeadragon.DrawerBase{
                 [bl, br] = [br, bl];
             }
 
-            // in theory, we already have all neccesary numbers (position, rotation etc.)
+            // we already have all neccesary numbers (position, rotation etc.)
             //DAO251: but I've been lazy, so recalculate to exactly fit OSD 5.0 behaviour
             const posTL = this.viewport.viewportToViewerElementCoordinates(
                     tiledImage.imageToViewportCoordinates(tl.x, tl.y, true)

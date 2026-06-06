@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DZI TileSource Demo</title>
+    <title>Drawer Demo</title>
     <script type="text/javascript" src='../../build/openseadragon/openseadragon.js'></script>
     <style type="text/css">
         .openseadragon1 {
             /* DEMO: to provide device pixel misalignment */
-            transform: translate(0.4px, 0.4px);
+            /* transform: translate(0.4px, 0.4px); */
             margin: 0px;
             border: 0px;
             width: 512px;
@@ -175,15 +175,16 @@
             const images = [
                 {
                     tileSource: "../../test/data/monalisa.dzi",
-                    demo:"DeepZoom Image : 80MP (7479x11146 px) tiled into 256x256 tiles",
+                    demo:"DeepZoom Image : 80MP (7479x11146 px) JPEG tiled into 256x256 tiles",
                     demoClip: new OpenSeadragon.Rect( 2169, 685, 2979, 4468),
                 },
                 {
-                    demo:"Simple Image : 1000x1000, tiled into 131x251 tiles",
+                    demo:"Simple Image : 1000x1000 PNG, tiled into 131x251 tiles",
                     tileSource: { type:"image", url:"../../test/data/BBlue.png", tileWidth: 131, tileHeight: 251 },
+                    demoClip: new OpenSeadragon.Rect( 200, 200, 500, 500),
                 },
                 {
-                    demo:"IIP TileSource: Huge WSI slide from https://merovingio.c2rmf.cnrs.fr/fcgi-bin/iipsrv.fcgi",
+                    demo:"IIP TileSource: Huge WSI slide tiled into 256x256 JPEG tiles with no overlap",
                     tileSource: {
                         iipsrv: "https://merovingio.c2rmf.cnrs.fr/fcgi-bin/iipsrv.fcgi",
                         image:  "77917.ome.tif",
@@ -192,11 +193,13 @@
                             contrast: 1.5,
                             twist: "[0,0,1;0,1,0;0.9,0,0.1]"
                         }
-                    }
+                    },
+                    demoClip: new OpenSeadragon.Rect( 20000, 15000, 10000, 10000),
                 },
                 {
-                    demo:'Image : 4096x4096, BW checkerboard 1x1, a nightmare for scaling',
+                    demo:'Image : 4096x4096 PNG - BW checkerboard 1x1, a nightmare for scaling tiled into 256x256',
                     tileSource: { type:"image", url:"../../test/data/checkerboard_4096.png" },
+                    demoClip: new OpenSeadragon.Rect( 1000, 1000, 1000, 1000),
                 },
                 {
                     demo:"OpenStreetMaps",
