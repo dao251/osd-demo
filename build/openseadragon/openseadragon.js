@@ -1,6 +1,6 @@
 //! openseadragon 5.1.0
 //! Built on 2026-06-06
-//! Git commit: v5.1.0-29-02865c68-dirty
+//! Git commit: v5.1.0-30-3c3f5446
 //! https://github.com/dao251/openseadragon
 //! License: https://raw.githubusercontent.com/dao251/openseadragon/main/license.txt
 
@@ -2971,7 +2971,7 @@ $.Utils = class {
      * @param {Element} el - The DOM element to snap.
      */
     static snapElementToDevicePixels(el) {
-        const dpr = window.devicePixelRatio;    // dont use $.pixelDensityRatio here !!! these are not always the same
+        const dpr = window.devicePixelRatio;
         // Get current rendered box
         const rect = el.getBoundingClientRect();
         // Compute aligned CSS pixel coordinates
@@ -2986,7 +2986,7 @@ $.Utils = class {
         const dx = snappedLeft - rect.left;
         const dy = snappedTop - rect.top;
         // Dead-zone to avoid chasing floating-point noise
-        const EPS = 1e-4;
+        const EPS = 1e-5;
         if (Math.abs(dx) < EPS && Math.abs(dy) < EPS) {
             return; // already aligned
         }
