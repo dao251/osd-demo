@@ -1,6 +1,6 @@
 //! openseadragon 5.1.0
 //! Built on 2026-06-06
-//! Git commit: v5.1.0-26-6a750b7b-dirty
+//! Git commit: v5.1.0-28-3c34ba38
 //! https://github.com/dao251/openseadragon
 //! License: https://raw.githubusercontent.com/dao251/openseadragon/main/license.txt
 
@@ -2981,11 +2981,11 @@ $.Utils = class {
         const dx = snappedLeft - rect.left;
         const dy = snappedTop - rect.top;
         // Dead-zone to avoid chasing floating-point noise
-        // const EPS = 1e-4;
-        // if (Math.abs(dx) < EPS && Math.abs(dy) < EPS) {
-        //     return; // already aligned
-        // }
-        // // Apply via transform (safe, non‑layout‑breaking)
+        const EPS = 1e-4;
+        if (Math.abs(dx) < EPS && Math.abs(dy) < EPS) {
+            return; // already aligned
+        }
+        // Apply via transform (safe, non‑layout‑breaking)
         const prev = getComputedStyle(el).transform;
         const base = prev === "none" ? "" : prev;
         el.style.transform = `${base} translate(${dx}px, ${dy}px)`;
@@ -17687,7 +17687,7 @@ $.Rect.prototype = {
             );
     },
 
-    ceil: function(){
+    expandToInegerBounds: function(){
             const x = Math.floor(this.x);
             const y = Math.floor(this.y);
             return new $.Rect(
@@ -22946,8 +22946,8 @@ function getComposite( tiledImage, level ) {
 
     const levelScale = 2 ** ( maxLevel - level );
 
-    // drawArea Rectangle in image pixels (expanded to integer boundaries)
-    // let imgDrawArea = drawArea.times(imgSize.x).ceil();
+    // drawArea Rectangle in image pixels (expand to integer boundaries ???)
+    // let imgDrawArea = drawArea.times(imgSize.x).expandToInegerBounds();
     let imgDrawArea = drawArea.times(imgSize.x).apply(Math.round);
 
     // clip here
@@ -22963,10 +22963,10 @@ function getComposite( tiledImage, level ) {
         imgDrawArea =  imgDrawArea.flip( imgSize.x / 2 );
     }
 
-    const imgTileSize = tileSize.times(levelScale);                             // tileSize in image pixels
-    const tilComposite = imgDrawArea.unscale(imgTileSize).ceil();               // composite context rectangle in tile numbers
-    const lyrComposite = tilComposite.scale(tileSize);                          // Composite context rectangle in level pixels
-    const lyrDrawArea = imgDrawArea.times( 1 / levelScale );                    // DrawArea in level pixels, do not round!!!
+    const imgTileSize = tileSize.times(levelScale);                                 // tileSize in image pixels
+    const tilComposite = imgDrawArea.unscale(imgTileSize).expandToInegerBounds();   // composite context rectangle in tile numbers
+    const lyrComposite = tilComposite.scale(tileSize);                              // Composite context rectangle in level pixels
+    const lyrDrawArea = imgDrawArea.times( 1 / levelScale );                        // DrawArea in level pixels, do not round!!!
 
     if ( lyrComposite.width <= 0 || lyrComposite.height <= 0){    // to be on the safe side
         return undefined;

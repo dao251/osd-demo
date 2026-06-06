@@ -127,9 +127,11 @@
             const tiledImage = viewer1.world.getItemAt(activeImage);
             const scale = tiledImage.lastDrawnTileScale;
             const level = tiledImage.lastDrawnLevel;
-            document.getElementById("scale").textContent = scale.toFixed(12);
-            document.getElementById("perfect-btn").disabled =( scale === Math.round(scale) );
-            document.getElementById("level").textContent = level;
+            try{
+                document.getElementById("scale").textContent = scale.toFixed(12);
+                document.getElementById("perfect-btn").disabled =( scale === Math.round(scale) );
+                document.getElementById("level").textContent = level;
+            }catch(e){}
         });
 
         function debug(v) {
