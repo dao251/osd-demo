@@ -1,6 +1,6 @@
 //! openseadragon 5.1.0
-//! Built on 2026-06-06
-//! Git commit: v5.1.0-30-3c3f5446
+//! Built on 2026-06-08
+//! Git commit: v5.1.0-32-6a043987-dirty
 //! https://github.com/dao251/openseadragon
 //! License: https://raw.githubusercontent.com/dao251/openseadragon/main/license.txt
 
@@ -8398,7 +8398,9 @@ $.Viewer = function( options ) {
     (function( style ){
         style.width    = "100%";
         style.height   = "100%";
-        style.overflow = "hidden";
+        // style.overflow = "hidden";       // "hidden" creates a scroll container, which prevents precise positioning
+        style.overflow = "clip";            // "clip" has the same visual effect
+        style.overflowClipMargin = "0px";   // in case that was in CSS
         style.position = "absolute";
         style.top      = "0px";
         style.left     = "0px";
@@ -8414,7 +8416,9 @@ $.Viewer = function( options ) {
         style.width     = "100%";
         style.height    = "100%";
         style.position  = "relative";
-        style.overflow  = "hidden";
+        // style.overflow = "hidden";       // "hidden" creates a scroll container, which prevents precise positioning
+        style.overflow = "clip";            // "clip" has the same visual effect
+        style.overflowClipMargin = "0px";   // in case that was in CSS
         style.left      = "0px";
         style.top       = "0px";
         style.textAlign = "left";  // needed to protect against
@@ -22971,7 +22975,7 @@ function getComposite( tiledImage, level ) {
     const imgTileSize = tileSize.times(levelScale);                                 // tileSize in image pixels
     const tilComposite = imgDrawArea.unscale(imgTileSize).expandToInegerBounds();   // composite context rectangle in tile numbers
     const lyrComposite = tilComposite.scale(tileSize);                              // Composite context rectangle in level pixels
-    const lyrDrawArea = imgDrawArea.times( 1 / levelScale );                        // DrawArea in level pixels, do not round!!!
+    const lyrDrawArea = imgDrawArea.times( 1 / levelScale ).apply(Math.round);      // DrawArea in level pixels
 
     if ( lyrComposite.width <= 0 || lyrComposite.height <= 0){    // to be on the safe side
         return undefined;
@@ -23070,6 +23074,19 @@ $.Drawer = class extends OpenSeadragon.DrawerBase{
         }, 250);
     }
 
+    get snapToDevicePixels(){
+        return this.__snapTodevicePixels;
+    }
+
+    set snapToDevicePixels(force){
+        if(this.__snapToDevicePixels === !!force){
+            return;
+        }
+
+        this.__snapTodevicePixels = !!force;
+        this.viewer.forceRedraw();
+    }
+
     /**
      * Destroy the drawer
      */
@@ -23125,39 +23142,44 @@ $.Drawer = class extends OpenSeadragon.DrawerBase{
         // prepare new frame
         const dpr = $.pixelDensityRatio;
 
-        const size = this.viewport.getContainerSize()
-            .times(dpr).apply(Math.ceil);      // must be integer (in device physical pixels)
+        // const size = this.viewport.getContainerSize()
+        //     .times(dpr).apply(Math.ceil);      // must be integer (in device physical pixels)
         const canvas = this.canvas;
-
-        // clears the canvas
-        canvas.width = size.x;
-        canvas.height = size.y;
+        const container = this.viewer.container;
 
         // align the canvas to device pixel boundaries
 
         // 1. Get rendered CSS box (what layout actually produced)
-        const rect = canvas.getBoundingClientRect();
+        const rect = container.getBoundingClientRect();
 
         // 2. Compute DPR-aligned CSS width/height
         //    This ensures cssWidth * dpr and cssHeight * dpr are integers.
-        const cssWidth  = Math.round(rect.width * dpr) / dpr;
-        const cssHeight = Math.round(rect.height * dpr) / dpr;
+        const devWidth  = Math.round(rect.width * dpr);
+        const devHeight = Math.round(rect.height * dpr);
+        const cssWidth  = devWidth / dpr;
+        const cssHeight = devHeight / dpr;
+
+        // clears the canvas
+        canvas.width = devWidth;
+        canvas.height = devHeight;
 
         // 3. Apply CSS size explicitly (lock it)
-        canvas.style.width  = size.x / dpr + "px";
-        canvas.style.height = size.y / dpr + "px";
+        canvas.style.width  = cssWidth + "px";
+        canvas.style.height = cssHeight + "px";
 
         // 4. Set backing store size (pixel-perfect)
-        const bsWidth  = Math.round(cssWidth * dpr);
-        const bsHeight = Math.round(cssHeight * dpr);
+        // const bsWidth  = Math.round(cssWidth * dpr);
+        // const bsHeight = Math.round(cssHeight * dpr);
 
-        if ( canvas.width !== bsWidth || canvas.height !== bsHeight ){
-            canvas.width  = bsWidth;
-            canvas.height = bsHeight;
+        // if ( canvas.width !== bsWidth || canvas.height !== bsHeight ){
+        //     canvas.width  = bsWidth;
+        //     canvas.height = bsHeight;
+        // }
+
+        //align the canvas element{
+        if(this.__snapTodevicePixels){
+            $.Utils.snapElementToDevicePixels(canvas);
         }
-
-        //align the canvas element
-        $.Utils.snapElementToDevicePixels(canvas);
 
         // flip the viewport //DAO251: why here ?
         if( this.viewer.viewport.getFlip() ){
