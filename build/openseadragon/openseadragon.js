@@ -1,6 +1,6 @@
 //! openseadragon 5.1.0
 //! Built on 2026-06-08
-//! Git commit: v5.1.0-32-6a043987-dirty
+//! Git commit: v5.1.0-33-4daeb490-dirty
 //! https://github.com/dao251/openseadragon
 //! License: https://raw.githubusercontent.com/dao251/openseadragon/main/license.txt
 
@@ -19940,10 +19940,12 @@ OpenSeadragon.DrawerBase = class DrawerBase{
         this.options = options.options || {};
 
         this.container  = $.getElement( options.element );
-
+        //DAO251: FUCK!!! call an overrided method from within base class constructor !!!!
         this._renderingTarget = this._createDrawingElement();
 
-
+        //DAO251: why styles are here?
+        //DAO251: which class is responsible for this.canvas AKA this._renderingTarget ???
+        //DAO251:     the class created it (derived) or DrawerBase ???
         this.canvas.style.width     = "100%";
         this.canvas.style.height    = "100%";
         this.canvas.style.position  = "absolute";
