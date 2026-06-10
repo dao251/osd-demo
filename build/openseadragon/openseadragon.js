@@ -1,6 +1,6 @@
 //! openseadragon 5.1.0
-//! Built on 2026-06-08
-//! Git commit: v5.1.0-33-4daeb490-dirty
+//! Built on 2026-06-10
+//! Git commit: v5.1.0-37-1d3214d8
 //! https://github.com/dao251/openseadragon
 //! License: https://raw.githubusercontent.com/dao251/openseadragon/main/license.txt
 
@@ -16354,8 +16354,8 @@ $.ImageTileSource = class extends $.TileSource {
             }
 
             src = canvas;
-            w >>= 1;
-            h >>= 1;
+            w = Math.ceil(w / 2);
+            h = Math.ceil(h / 2);
         }
 
         // we don't need the original image anymore
@@ -21847,7 +21847,7 @@ function determineSubPixelRoundingRule(subPixelRoundingRules) {
                         tiledImage.debugMode
                     );
 
-                    let useTwoPassRendering = useContext2dPipeline || (tiledImage.opacity < 1); // DAO251: removed hasTransparency flag
+                    let useTwoPassRendering = true; // DAO251: removed hasTransparency flag
                     // let useTwoPassRendering = useContext2dPipeline || (tiledImage.opacity < 1) || firstTile.hasTransparency;
 
                     // using the context2d pipeline requires a clean rendering (back) buffer to start
@@ -23085,7 +23085,7 @@ $.Drawer = class extends OpenSeadragon.DrawerBase{
             return;
         }
 
-        this.__snapTodevicePixels = !!force;
+        this.__snapToDevicePixels = !!force;
         this.viewer.forceRedraw();
     }
 
@@ -23149,8 +23149,6 @@ $.Drawer = class extends OpenSeadragon.DrawerBase{
         const canvas = this.canvas;
         const container = this.viewer.container;
 
-        // align the canvas to device pixel boundaries
-
         // 1. Get rendered CSS box (what layout actually produced)
         const rect = container.getBoundingClientRect();
 
@@ -23158,28 +23156,17 @@ $.Drawer = class extends OpenSeadragon.DrawerBase{
         //    This ensures cssWidth * dpr and cssHeight * dpr are integers.
         const devWidth  = Math.round(rect.width * dpr);
         const devHeight = Math.round(rect.height * dpr);
-        const cssWidth  = devWidth / dpr;
-        const cssHeight = devHeight / dpr;
 
         // clears the canvas
         canvas.width = devWidth;
         canvas.height = devHeight;
 
         // 3. Apply CSS size explicitly (lock it)
-        canvas.style.width  = cssWidth + "px";
-        canvas.style.height = cssHeight + "px";
+        canvas.style.width  = devWidth / dpr + "px";
+        canvas.style.height = devHeight / dpr + "px";
 
-        // 4. Set backing store size (pixel-perfect)
-        // const bsWidth  = Math.round(cssWidth * dpr);
-        // const bsHeight = Math.round(cssHeight * dpr);
-
-        // if ( canvas.width !== bsWidth || canvas.height !== bsHeight ){
-        //     canvas.width  = bsWidth;
-        //     canvas.height = bsHeight;
-        // }
-
-        //align the canvas element{
-        if(this.__snapTodevicePixels){
+        // align the canvas to device pixel boundaries
+        if(this.__snapToDevicePixels){
             $.Utils.snapElementToDevicePixels(canvas);
         }
 
