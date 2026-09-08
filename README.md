@@ -36,6 +36,6 @@ Some changes introduced in v6 outside the rendering engine (e.g. new TileSources
 will eventually be cherry-picked. I don't publish dao251/openseadragon updates very often, although they may be available in this demo.
 For example, the webgl drawer, which is currently in alpha (quite slow and not fully developed).
 
-You can compare the behavior of different OSD versions using the [**version comparison demo**](https://dao251.github.io/osd-demo/test/demo/_drawer.html?i=0&v=0&d=1). 
+You can compare the behavior of different OSD versions using the [**version comparison demo**](https://dao251.github.io/osd-demo/test/demo/_drawer.html?i=0&v=0&d=3). 
 A description of what to pay attention to, where are the artifacts and other issues with traditional OSD
 is [here](https://github.com/dao251/osd-demo/discussions/4).
