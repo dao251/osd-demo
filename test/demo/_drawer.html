@@ -408,7 +408,7 @@
 
 
         window.debug = (v) => OSD.viewers.forEach( o => o.viewer.setDebugMode?.(v) )
-        window.flip  = (v) => OSD.viewers.forEach( o => o.viewer.world.getItemAt(0).setFlip?.(v) )
+        window.flip  = (v) => OSD.viewers.forEach( o => { o.viewer.world.getItemAt(0).setFlip?.(v) ; o.viewer.forceRedraw(); } )
         window.clip  = (v) => {
             const rect = (v ? images[imageSelector.value].clip : undefined);
             if(rect)
