@@ -19,23 +19,23 @@ or generate tiles on the fly in a clearer and more transparent way than the OSD 
 This capability is especially important for the transition to using only 2x2 tile pyramids internally.
 More details are available [here](https://github.com/dao251/osd-demo/discussions/2).
 
-3) The **refactored rendering/drawing engine** now uses the **"first stich, then transform"** approach for displaying tiled images.
+3) The **refactored rendering/drawing engine** now uses the **"first stich, then transform"** approach for displaying tiled images.<br>
 Traditional OSD versions transform (scale, rotate) and draw tiles individually, which produces numerous tiling artifacts -
-seams, geometric inaccuracies, jitter, unstable images, and more. 
+[seams, geometric inaccuracies, jitter, unstable images, and more](https://github.com/dao251/osd-demo/discussions/4). 
 In the refactored engine, tiles are merged _before_ drawing, so the final rendering matches the original image pixel-for-pixel (like it was before tiling).
-Besides significantly higher visual quality, the new engine also provides _better performance_ - both in drawing and tile loading.
+Besides significantly higher **visual quality**, the new engine also provides **better performance** - both in drawing and tile loading.
 
 The dao251 fork does not yet support some (minor) OSD options, including inter-layer blending, wrapHorisontal/Vertical,
 and some of the tile-related events (tile-drawing, tile-unload, etc.). Most of these can be easily added within the new architecture.
 Support for non‑2×2 pyramids requires clear, purely technical work.
 A full list of currently unsupported features will be available [here](https://github.com/dao251/osd-demo/discussions/3).
 
-The dao251 fork is **based on OSD v5**. 
+The dao251 fork is **based on OSD v5**.<br> 
 This is because v6 introduced extensive core changes that I am particularly skeptical about.
 Some features introduced in v6 outside the rendering engine (e.g. new TileSources, MouseTracker, and Overlay fixes)
 will eventually be cherry-picked. I don't publish dao251/openseadragon updates very often, although newer features may appear in the demo.
 For example, the webgl drawer, which is currently in alpha (quite slow and not fully developed).
 
-You can compare the behavior of different OSD versions using the [**version comparison demo**](https://dao251.github.io/osd-demo/test/demo/_drawer.html?i=0&v=0&d=3). 
+You can compare the behavior of different OSD versions using the [**version comparison demo**](https://dao251.github.io/osd-demo/test/demo/_drawer.html?i=0&v=0&d=3).<br> 
 A description of what to pay attention to, where are the artifacts and other issues with traditional OSD
 is available [here](https://github.com/dao251/osd-demo/discussions/4).
