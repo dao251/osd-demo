@@ -135,7 +135,7 @@
             {
                 tileSource: {
                     tileSource: "../../test/data/monalisa.dzi",
-                    loadTilesWithAjax: true,
+                    // loadTilesWithAjax: true,
                     useOwnCache: true,
                 },
                 text: "DZI Mona Lisa : 80MP (7479x11146 px) JPEG tiled into 256x256 (PNG) tiles",
@@ -253,13 +253,17 @@
                     url: "../../.ver/OSD.6.1.1/openseadragon.js",
                     viewerOptions: { drawer:'webgl', loadTilesWithAjax: true },
                 },
+                {   version: "OSD 6.1.1 'html'",
+                    url: "../../.ver/OSD.6.1.1/openseadragon.js",
+                    viewerOptions: { drawer:'html' },
+                },
                 {   version: "OSD 5.0.1 'canvas'",
                     url: "../../.ver/OSD.5.0.1/openseadragon.js",
                     viewerOptions: { drawer:'canvas' },
                 },
                 {   version: "OSD 5.0.1 'webgl'",
                     url: "../../.ver/OSD.5.0.1/openseadragon.js",
-                    viewerOptions: { drawer:'webgl' },
+                    viewerOptions: { drawer:'webgl', loadTilesWithAjax: true },
                 },
                 {   version: "OSD 4.1.1 ",
                     url: "../../.ver/OSD.4.1.1/openseadragon.js",
@@ -268,6 +272,10 @@
                 {   version: "OSD 3.1.0 ",
                     url: "../../.ver/OSD.3.1.0/openseadragon.js",
                     viewerOptions: { },
+                },
+                {   version: "OSD 3.1.0 no-canvas",
+                    url: "../../.ver/OSD.3.1.0/openseadragon.js",
+                    viewerOptions: { useCanvas: false, },
                 },
                 {   version: "OSD 2.1.0 ",
                     url: "../../.ver/OSD.2.1.0/openseadragon.js",
@@ -285,6 +293,7 @@
 
                 minZoomLevel: 0.01,
                 maxZoomPixelRatio: 4.00,
+                // wrapHorizontal:true,
 
                 minPixelRatio: .5, //OSD default
 
@@ -428,14 +437,17 @@
         // window.opacity = (v) => OSD.viewers.forEach( o => o.viewer.world.getItemAt(0).setOpacity(v?.5:1) )
 
         window.opacity = v =>
-        OSD.viewers.forEach(o =>
-            [...Array(o.viewer.world.getItemCount()).keys()]
-            .forEach(i => o.viewer.world.getItemAt(i).setOpacity(v?.5 : 1))
-        );
+            OSD.viewers.forEach(o =>
+                [...Array(o.viewer.world.getItemCount()).keys()]
+                .forEach(i => o.viewer.world.getItemAt(i).setOpacity(v?.5 : 1))
+            );
 
-
-
-        window.smooth  = (v) => OSD.viewers.forEach( o => o.viewer.drawer.setImageSmoothingEnabled?.(v) )
+        window.smooth  = v =>
+            OSD.viewers.forEach( o => {
+                o.viewer.drawer.setImageSmoothingEnabled?.(v);          // OSD: the option is set per Drawer
+                [...Array(o.viewer.world.getItemCount()).keys()]        // DAO: the option is set per TiledImage
+                    .forEach(i => {o.viewer.world.getItemAt(i).imageSmoothingEnabled = v})
+            } )
 
         const unwraps = [];
 
