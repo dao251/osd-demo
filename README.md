@@ -9,7 +9,7 @@ I will write a [separate explanation](https://github.com/dao251/osd-demo/discuss
 of the reasoning behind this choice (it is not merely a simplification of the internal code)
 and how non-2x2 OSD tile sources are (or can be) supported.
 
-2) The `TileSouce` class is no longer required to implement the `getTileURL(level,x,y)` method.  
+2) The `TileSource` class is no longer required to implement the `getTileURL(level,x,y)` method.  
 Instead, the **primary method is `getTileImage(level,x,y)`**, which returns the tile image itself, rather than an URL.
 It is invoked asynchronously and may itself be async.
 The good old `getTileURL` can still be used: the default `getTileImage` implementation supports
