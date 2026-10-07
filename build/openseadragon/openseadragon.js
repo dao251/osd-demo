@@ -1,6 +1,6 @@
 //! openseadragon 5.3.1
 //! Built on 2026-10-07
-//! Git commit: v5.3.1-7-fa86de22
+//! Git commit: v5.3.1-8-88755653
 //! https://github.com/dao251/openseadragon
 //! License: https://raw.githubusercontent.com/dao251/openseadragon/main/license.txt
 
@@ -25774,7 +25774,7 @@ class Composite {
             const [ sx, sy, sw, sh ] = [ 0, 0, dw, dh ];
             ctx.fillRect( sx, sy, sw, sh );
             buffer.drawTileImage(
-                canvas,
+                { img: canvas },
                 { x: sx, y: sy, width: sw, height: sh },  // source rect
                 { x: dx, y: dy, width: dw, height: dh },  // destination rect
                 debugInfo
