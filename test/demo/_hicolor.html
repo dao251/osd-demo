@@ -40,7 +40,7 @@
 
     const ctx0 = createCanvas('c0').getContext("2d");
     // generate8bit(ctx0,  "#4AA3FF", "#1E90FF");
-    generate8bit(ctx0,  "#303030", "#404040");
+    generate8bit(ctx0, "#404040", "#303030");
 
     const ctx1 = createCanvas('c1')
         .getContext("2d", {
@@ -48,7 +48,7 @@
                 pixelFormat: "float16"
             });
     // generate16bit(ctx1,  "#4AA3FF", "#1E90FF");
-    generate16bit(ctx1,  "#303030", "#404040");
+    generate16bit(ctx1, "#404040", "#303030");
 
     img = new Image(CSS_SIZE, CSS_SIZE);
     img.src = "../../test/data/grey_gradient10.avif";
