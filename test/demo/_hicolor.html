@@ -4,6 +4,9 @@
   <meta charset="utf-8">
   <title>Hi-Color-Precision test</title>
   <style>
+    * {
+        background-color: #606060;
+    }
     #container {
       display: flex;
       gap: 8px;
@@ -28,25 +31,27 @@
     let img;
 
     img = new Image(CSS_SIZE, CSS_SIZE);
-    img.src = "../../test/data/blue_gradient8.png";
+    img.src = "../../test/data/grey_gradient8.png";
     container.appendChild(img);
 
     img = new Image(CSS_SIZE, CSS_SIZE);
-    img.src = "../../test/data/blue_gradient16.png";
+    img.src = "../../test/data/grey_gradient16.png";
     container.appendChild(img);
 
     const ctx0 = createCanvas('c0').getContext("2d");
-    generate8bit(ctx0,  "#4AA3FF", "#1E90FF");
+    // generate8bit(ctx0,  "#4AA3FF", "#1E90FF");
+    generate8bit(ctx0,  "#303030", "#404040");
 
     const ctx1 = createCanvas('c1')
         .getContext("2d", {
                 // colorSpace: "display-p3",
                 pixelFormat: "float16"
             });
-    generate16bit(ctx1,  "#4AA3FF", "#1E90FF");
+    // generate16bit(ctx1,  "#4AA3FF", "#1E90FF");
+    generate16bit(ctx1,  "#303030", "#404040");
 
     img = new Image(CSS_SIZE, CSS_SIZE);
-    img.src = "../../test/data/blue_gradient10.avif";
+    img.src = "../../test/data/grey_gradient10.avif";
     container.appendChild(img);
 
 // ----------------------------------------------------------------------------
