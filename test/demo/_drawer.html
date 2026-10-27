@@ -21,7 +21,9 @@
             outline: none;
             box-shadow: none;
         }
-        #scale {-moz-appearance:textfield; appearance:textfield;}
+        #scale, #zoom {-moz-appearance:textfield; appearance:textfield;}
+        #zoom::-webkit-inner-spin-button,
+        #zoom::-webkit-outer-spin-button,
         #scale::-webkit-inner-spin-button,
         #scale::-webkit-outer-spin-button {-webkit-appearance:none; appearance:none;}
         #control_form {
@@ -65,7 +67,9 @@
                     <div><input type="checkbox" onchange="flip(this.checked)">Flip</div>
                     <div><input type="checkbox" onchange="clip(this.checked)">Clip</div>
                     <div><input type="checkbox" onchange="opacity(this.checked)">Opacity</div>
-                    <div>Zoom: <span id="zoom"></span></div>
+                    <div>Zoom (dev px / image px)</div>
+                    <!-- <input id="zoom" type=number step=any readonly="readonly" onchange="onZoom(this.value);"> -->
+                    <input id="zoom" type=number step=any onchange="onZoom(this.value);">
                     <!-- <div>GCO: <select onchange="onGCOselect(this.value)" id="gco_select"></select></div> -->
                     <!-- <div> </div> -->
                     <!-- <div><input type="checkbox" onchange="snapToDevice(this.checked)" checked>Snap to Device Px</div> -->
@@ -90,7 +94,7 @@
                 <div>&lt;-Level: <span id="level"> </span></div>
                 <div>&lt;-Tile Scale</div>
                 <input id="scale" type=number step=any onchange="onScale(this.value);">
-                <button id="perfect-btn" onclick="onPerfect();">Zoom to Pixels</button>
+                <button id="perfect-btn" tabindex="-1" type="button" onclick="onPerfect();">Zoom to Pixels</button>
                 <div> </div>
                 <div>&lt;-LoD Range Factor: <span id="lrf">1.0</span></div>
                 <input id="lod" type="range" min="0" max="4" step="0.1" value="1" oninput="setRangeFactor(this.value)">
@@ -138,7 +142,7 @@
                     tileSource: "../../test/data/monalisa.dzi",
                     // loadTilesWithAjax: true,
                 },
-                text: "DZI Mona Lisa : 80MP (7479x11146 px) JPEG tiled into 256x256 (PNG) tiles",
+                text: "DZI Mona Lisa: https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg (tiled)",
                 clip: [ 2000, 2000, 2000, 4000 ],
                 viewerOptions: {fetchOptions:{}},
             },
@@ -151,12 +155,13 @@
                 clip: [ 200, 200, 500, 500 ],
             },
             {
-                text: "IIP TileSource: Huge WSI slide (256x256 JPEG tiles with no overlap)",
+                text: "IIP: Huge WSI slide (https://iipimage.sourceforge.io/2023/03/ome-tiff-whole-slide-microscopy)",
                 tileSource: {
                     tileSource: {
                         iipsrv: "https://merovingio.c2rmf.cnrs.fr/fcgi-bin/iipsrv.fcgi",
                         image:  "77917.ome.tif",
-                        format: "jpg",      // jpeg creates tiling artifacts on the server, need overlaps !!!
+                        // format: "jpg",      // jpeg creates tiling artifacts on the server, need overlaps !!!
+                        format: "png",
                         transform:  {
                             contrast: 1.5,
                             twist: "[0,0,1;0,1,0;0.9,0,0.1]"
@@ -167,15 +172,14 @@
                 clip: [ 20000, 15000, 10000, 10000],
             },
             {
-                text: 'DZI : 4096x4096 - 1px grid (every 8px) (256x256 PNG tiles)',
+                text: 'DZI Grid: 1px grid (every 8px)',
                 tileSource: "../../test/data/8px_grid.dzi",
                 clip: [ 1000, 1000, 1000, 1000 ],
             },
             {
-                text: "OpenStreetMap (non-CORS tile provider)",
+                text: "OpenStreetMap (non-CORS tile provider https://tile.memomaps.de/tilegen/)",
                 tileSource: {
                     type: 'openstreetmaps', width: 67108864, height: 67108864,
-                    // tilesUrl: "https://tile.openstreetmap.org/",
                     tilesUrl: "https://tile.memomaps.de/tilegen/", // non-CORS
                     lodRangeFactor: 2,
                 },
@@ -185,7 +189,7 @@
                     tileSource: "https://openseadragon.github.io/example-images/duomo/duomo.dzi",
                     loadTilesWithAjax: true,
                 },
-                text: "DZI Duomo : (13920x10200 px) image ( 254x254 JPEG tiles with 1px overlap)",
+                text: "DZI Duomo (1px overlap): https://www.flickr.com/photos/projectese/7993440342/ ",
                 clip: [ 1024, 768, 3072, 4096 ],
             },
             {
@@ -193,12 +197,9 @@
                     "../../test/data/monalisa.dzi",
                     "../../test/data/bblue.dzi",
                 ],
-                text: "Stack",
+                text: "Stacked images",
             },
             {
-                // demo:"Simple Image: 1000x1000 PNG, tiled into 131x251 tiles",
-                // tileSource: { type:"image", url:"../../test/data/BBlue.png", tileWidth: 131, tileHeight: 251 },
-                // demoClip: new OpenSeadragon.Rect( 200, 200, 500, 500),
                 text: "Simple Image: Mona Lisa",
                 tileSource: { type:"image", url:"../../test/data/MonaLisa.jpg" , buildPyramid: true, tileWidth: 251, tileHeight: 367 },
             },
@@ -208,13 +209,12 @@
                     { type: "image", url: "../../test/data/green_100.png"},
                     { type: "image", url: "../../test/data/blue_50.png"},
                 ],
-                text: "Stack with transparency: 50% B over 100% G over 100% R ",
+                text: "Stacked with transparency: 50% B over 100% G over 100% R ",
             },
             {
                 tileSource: {
                     tileSource: "https://iiif.wellcomecollection.org/image/B2864444X.JP2/info.json",
                     loadTilesWithAjax: true,
-                    fetchOptions:{},
                 },
                 text: "IIIF: https://iiif.wellcomecollection.org/image/B2864444X.JP2/info.json",
             },
@@ -376,8 +376,8 @@
                         const scale = tiledImage.lastDrawnTileScale;
                         const level = tiledImage.lastDrawnLevel;
                         const zoom = tiledImage.viewportToImageZoom(OSD.viewers[0].viewer.viewport.getZoom(true)) * devicePixelRatio;
-                        document.getElementById("zoom").textContent = zoom.toFixed(17);
-                        document.getElementById("scale").value = scale.toFixed(17);
+                        document.getElementById("zoom").value = zoom.toFixed(15);
+                        document.getElementById("scale").value = scale.toFixed(15);
                         document.getElementById("perfect-btn").disabled =( scale === Math.round(scale) );
                         document.getElementById("level").textContent = level;
                         document.getElementById("lod").value = tiledImage.lodRangeFactor;
@@ -426,7 +426,7 @@
                     const tiledImage = OSD.viewers[0].viewer.world.getItemAt(0);
                     const scale = tiledImage.lastDrawnTileScale;
                     const level = tiledImage.lastDrawnLevel;
-                    document.getElementById("scale").value = scale.toFixed(17);
+                    document.getElementById("scale").value = scale.toFixed(15);
                     document.getElementById("perfect-btn").disabled =( scale === Math.round(scale) );
                     document.getElementById("level").textContent = level;
                 }catch(e){}
@@ -485,16 +485,25 @@
 
         window.onScale = function(v){
             const viewer = OSD.viewers[0].viewer;
+            const scale = viewer.world.getItemAt(0).lastDrawnTileScale;
+            const iScale = Number(v);
             const currentZoom = viewer.viewport.getZoom();
-            viewer.viewport.zoomTo(currentZoom*Number(v));
+            viewer.viewport.zoomTo(currentZoom/scale*iScale);
         }
+
+        window.onZoom = function(v){
+            const viewer = OSD.viewers[0].viewer;
+            v = Math.max(Number(v), 0.01);
+            const zoom = viewer.world.getItemAt(0).imageToViewportZoom( v / devicePixelRatio);
+            viewer.viewport.zoomTo(zoom);
+        }
+
 
         window.onPerfect = function(){ // zoom to perfect pixels at current level
             const viewer = OSD.viewers[0].viewer;
             const scale = viewer.world.getItemAt(0).lastDrawnTileScale;
             const iScale = Math.round(scale)
             const currentZoom = viewer.viewport.getZoom();
-            // viewer.viewport.zoomTo(currentZoom/scale*iScale,null,true);
             viewer.viewport.zoomTo(currentZoom/scale*iScale);
         }
 
