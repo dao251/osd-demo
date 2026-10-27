@@ -65,6 +65,7 @@
                     <div><input type="checkbox" onchange="flip(this.checked)">Flip</div>
                     <div><input type="checkbox" onchange="clip(this.checked)">Clip</div>
                     <div><input type="checkbox" onchange="opacity(this.checked)">Opacity</div>
+                    <div>Zoom: <span id="zoom"></span></div>
                     <!-- <div>GCO: <select onchange="onGCOselect(this.value)" id="gco_select"></select></div> -->
                     <!-- <div> </div> -->
                     <!-- <div><input type="checkbox" onchange="snapToDevice(this.checked)" checked>Snap to Device Px</div> -->
@@ -136,7 +137,6 @@
                 tileSource: {
                     tileSource: "../../test/data/monalisa.dzi",
                     // loadTilesWithAjax: true,
-                    useOwnCache: true,
                 },
                 text: "DZI Mona Lisa : 80MP (7479x11146 px) JPEG tiled into 256x256 (PNG) tiles",
                 clip: [ 2000, 2000, 2000, 4000 ],
@@ -179,7 +179,6 @@
                     tilesUrl: "https://tile.memomaps.de/tilegen/", // non-CORS
                     lodRangeFactor: 2,
                 },
-                nonCORS: true,
             },
             {
                 tileSource: {
@@ -211,7 +210,14 @@
                 ],
                 text: "Stack with transparency: 50% B over 100% G over 100% R ",
             },
-
+            {
+                tileSource: {
+                    tileSource: "https://iiif.wellcomecollection.org/image/B2864444X.JP2/info.json",
+                    loadTilesWithAjax: true,
+                    fetchOptions:{},
+                },
+                text: "IIIF: https://iiif.wellcomecollection.org/image/B2864444X.JP2/info.json",
+            },
 
         ];
         const viewers = [
@@ -222,7 +228,6 @@
                         maxImageCacheCount: 20,
                         snapToDevicePixels: true,
                         lodRangeFactor: 1,
-                        fetchOptions:{},
                     }
                 },
                 {   version: "dao251 'webgl'",
@@ -232,13 +237,13 @@
                         maxImageCacheCount: 20,
                         snapToDevicePixels: true,
                         lodRangeFactor: 1,
-                        fetchOptions:{},
                     }
                 },
                 {   version: "dao251 'html'",
                     url: "",
+                    // url: `../../build/openseadragon/openseadragon${min}.js`,
                     viewerOptions:{
-                        drawer:'webgl',
+                        drawer:'html',
                         maxImageCacheCount: 20,
                         snapToDevicePixels: true,
                         lodRangeFactor: 1,
@@ -289,7 +294,10 @@
                 showFlipControl: true,
 
                 rotationIncrement: 22.5,
-                zoomPerScroll: Math.sqrt(Math.sqrt(Math.SQRT2)),   // "slow" mouse wheel for demo purposes
+                // zoomPerScroll: Math.sqrt(Math.sqrt(Math.SQRT2)),   // "slow" mouse wheel
+                zoomPerScroll: Math.sqrt(Math.SQRT2),
+
+                pixelsPerArrowPress: 39.4,   // simulate DPR misalignments
 
                 minZoomLevel: 0.01,
                 maxZoomPixelRatio: 4.00,
@@ -367,6 +375,8 @@
                         const tiledImage = OSD.viewers[0].viewer.world.getItemAt(0);
                         const scale = tiledImage.lastDrawnTileScale;
                         const level = tiledImage.lastDrawnLevel;
+                        const zoom = tiledImage.viewportToImageZoom(OSD.viewers[0].viewer.viewport.getZoom(true)) * devicePixelRatio;
+                        document.getElementById("zoom").textContent = zoom.toFixed(17);
                         document.getElementById("scale").value = scale.toFixed(17);
                         document.getElementById("perfect-btn").disabled =( scale === Math.round(scale) );
                         document.getElementById("level").textContent = level;
@@ -434,7 +444,6 @@
                 OSD.viewers.forEach( o => o.viewer.world.getItemAt(0).setClip(null) )
         }
         window.rotate  = (v) => OSD.viewers.forEach( o => o.viewer.world.getItemAt(0).setRotation?.(v) )
-        // window.opacity = (v) => OSD.viewers.forEach( o => o.viewer.world.getItemAt(0).setOpacity(v?.5:1) )
 
         window.opacity = v =>
             OSD.viewers.forEach(o =>
