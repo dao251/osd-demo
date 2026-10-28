@@ -10,9 +10,13 @@
             overflow: clip;
         }
         #osd {
+            /* DEMO: to provide device pixel misalignment (simulate real-life page layouts) */
+            /* 0.4px guarantees misalignment for DPR = 1.5, 2, 3  */
+            /* position: relative; */
+            /* left: 0.4px; */
+            /* top: 0.4px; */
             width: 100%;
             height: 100%;
-            /* background-color: rgb(223,223,255); */
             background-image: url("../data/bg.jpg");
         }
         .openseadragon-canvas:focus {
@@ -34,7 +38,6 @@
         osd.viewers[myId].viewer = undefined;
     }
 
-    // await import(new URL(osdUrl, import.meta.url));
     await loadScriptAsync(osdUrl);
 
     const viewerOptions = osd ? osd.viewerOptions :

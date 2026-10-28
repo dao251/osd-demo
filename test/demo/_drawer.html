@@ -9,9 +9,9 @@
         .openseadragon1 {
             /* DEMO: to provide device pixel misalignment (simulate real-life page layouts) */
             /* 0.4px guarantees misalignment for DPR = 1.5, 2, 3  */
-            position: relative;
-            left: 0.4px;
-            top: 0.4px;
+            /* position: relative; */
+            /* left: 0px; */
+            /* top: 0px; */
             margin: 0px;
             border: 0px;
             width: 512px;
@@ -68,7 +68,6 @@
                     <div><input type="checkbox" onchange="clip(this.checked)">Clip</div>
                     <div><input type="checkbox" onchange="opacity(this.checked)">Opacity</div>
                     <div>Zoom (dev px / image px)</div>
-                    <!-- <input id="zoom" type=number step=any readonly="readonly" onchange="onZoom(this.value);"> -->
                     <input id="zoom" type=number step=any onchange="onZoom(this.value);">
                     <!-- <div>GCO: <select onchange="onGCOselect(this.value)" id="gco_select"></select></div> -->
                     <!-- <div> </div> -->
@@ -106,23 +105,14 @@
                         <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="20">
                     </a>
                 </small>
-            </div><!-- <details open>
-                <summary>WebGL filters:</summary>
-                <div>1</div>
-           </details>
-            <details>
-                <summary>Performance:</summary>
-                <div>2</div>
-           </details> -->
+            </div>
         </form>
     </div>
         <div>
             <iframe id="1" class="openseadragon1"></iframe>
         </div>
     </div>
-    <!-- <div>
-        <pre id="out" style="height:400px; width:1100px; overflow-y:auto;"></pre>
-    </div> -->
+
     <script>
         for(const d of document.querySelectorAll("details"))
         d.ontoggle = () => d.open &&
@@ -140,11 +130,9 @@
             {
                 tileSource: {
                     tileSource: "../../test/data/monalisa.dzi",
-                    // loadTilesWithAjax: true,
                 },
                 text: "DZI Mona Lisa: https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg (tiled)",
                 clip: [ 2000, 2000, 2000, 4000 ],
-                viewerOptions: {fetchOptions:{}},
             },
             {
                 text: "DZI BBlue : 1000x1000 (256x256 PNG tiles)",
@@ -295,13 +283,12 @@
 
                 rotationIncrement: 22.5,
                 // zoomPerScroll: Math.sqrt(Math.sqrt(Math.SQRT2)),   // "slow" mouse wheel
-                zoomPerScroll: Math.sqrt(Math.SQRT2),
+                // zoomPerScroll: Math.sqrt(Math.SQRT2),
 
                 pixelsPerArrowPress: 39.4,   // simulate DPR misalignments
 
                 minZoomLevel: 0.01,
                 maxZoomPixelRatio: 4.00,
-                // wrapHorizontal:true,
 
                 minPixelRatio: .5, //OSD default
 
@@ -336,17 +323,10 @@
             if( mainViewer === compareTo && m !== mainViewer ) c = m ;
             if( m > c ) [m, c] = [c, m];
             let imgPosition = '';
-            // if( Number(imageSelector.value) === demoImage ){    // didn't change the Image
-            //     const zoom = OSD.viewers[0].viewer.viewport.getZoom();
-            //     const cent = OSD.viewers[0].viewer.viewport.getCenter();
-            //     const rota = OSD.viewers[0].viewer.viewport.getRotation();
-            //     imgPosition = `&z=${zoom}&cx=${cent.x}&cy=${cent.y}&r=${rota}`
-            // }
             location.search = `?i=${imageSelector.value}&v=${m}&d=${c}${imgPosition}`
         }
 
         OSD.viewerOptions.tileSources = images[imageSelector.value].tileSource;
-        // OSD.viewerOptions.tileSources = images[imageSelector.value].tileSource;
 
         setInterval( () => {
             try{
@@ -367,23 +347,23 @@
         }, 250);  // update performance counters 4 times per second
 
 
+        OSD.animationHandler = (event) => {
+            try{
+                const tiledImage = OSD.viewers[0].viewer.world.getItemAt(0);
+                const scale = tiledImage.lastDrawnTileScale;
+                const level = tiledImage.lastDrawnLevel;
+                const zoom = tiledImage.viewportToImageZoom(OSD.viewers[0].viewer.viewport.getZoom(true)) * devicePixelRatio;
+                document.getElementById("zoom").value = zoom.toFixed(15);
+                document.getElementById("scale").value = scale.toFixed(15);
+                document.getElementById("perfect-btn").disabled =( scale === Math.round(scale) );
+                document.getElementById("level").textContent = level;
+                document.getElementById("lod").value = tiledImage.lodRangeFactor;
+                document.getElementById("lrf").textContent = Number(tiledImage.lodRangeFactor).toFixed(1);
+            }catch(e){}
+        }
+
         if( Number(mainViewer) > 2 ){
             document.getElementById("dao251").style = "display:none;";
-        } else {
-            OSD.animationHandler = (event) => {
-                    try{
-                        const tiledImage = OSD.viewers[0].viewer.world.getItemAt(0);
-                        const scale = tiledImage.lastDrawnTileScale;
-                        const level = tiledImage.lastDrawnLevel;
-                        const zoom = tiledImage.viewportToImageZoom(OSD.viewers[0].viewer.viewport.getZoom(true)) * devicePixelRatio;
-                        document.getElementById("zoom").value = zoom.toFixed(15);
-                        document.getElementById("scale").value = scale.toFixed(15);
-                        document.getElementById("perfect-btn").disabled =( scale === Math.round(scale) );
-                        document.getElementById("level").textContent = level;
-                        document.getElementById("lod").value = tiledImage.lodRangeFactor;
-                        document.getElementById("lrf").textContent = Number(tiledImage.lodRangeFactor).toFixed(1);
-                    }catch(e){}
-                }
         }
 
         if( mainViewer == compareTo ) {
@@ -394,9 +374,7 @@
             document.getElementById("1").style.width = "0px";
             document.getElementById("viewer1").style.opacity = "0.2";
             document.getElementById("0").src = "_viewer.html";
-
         } else {
-
             OSD.viewers = [
                 viewers[document.getElementById("viewer0").value],
                 viewers[document.getElementById("viewer1").value],
@@ -432,7 +410,6 @@
                 }catch(e){}
             }
         }
-
 
         window.debug = (v) => OSD.viewers.forEach( o => o.viewer.setDebugMode?.(v) )
         window.flip  = (v) => OSD.viewers.forEach( o => { o.viewer.world.getItemAt(0).setFlip?.(v) ; o.viewer.forceRedraw(); } )
@@ -474,7 +451,6 @@
         window.setRangeFactor = function(v) {
             document.getElementById('lrf').textContent = Number(v).toFixed(1)
             OSD.viewers[0].viewer.world.getItemAt(0).lodRangeFactor = v;
-            // OSD.viewers[0].viewer.forceRedraw();
         }
 
         window.setMinPixRatio = function(v) {
@@ -497,7 +473,6 @@
             const zoom = viewer.world.getItemAt(0).imageToViewportZoom( v / devicePixelRatio);
             viewer.viewport.zoomTo(zoom);
         }
-
 
         window.onPerfect = function(){ // zoom to perfect pixels at current level
             const viewer = OSD.viewers[0].viewer;
@@ -556,9 +531,5 @@
         // }
 
     </script>
-    <!-- <script>
-        document.getElementById("out").textContent =
-            document.getElementById("code").textContent;
-    </script> -->
 </body>
 </html>
