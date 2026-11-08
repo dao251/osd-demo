@@ -189,7 +189,7 @@
             },
             {
                 text: "Simple Image: Mona Lisa",
-                tileSource: { type:"image", url:"../../test/data/MonaLisa.jpg" , buildPyramid: true, tileWidth: 251, tileHeight: 367 },
+                tileSource: { type:"image", url:"../../test/data/MonaLisa.jpg" , buildPyramid: true, tileWidth: 251, tileHeight: 367, useCanvas: true },
             },
             {
                 tileSource: [
@@ -206,7 +206,14 @@
                 },
                 text: "IIIF: https://iiif.wellcomecollection.org/image/B2864444X.JP2/info.json",
             },
-
+            {
+                text: "Wide Gamut: Display-P3",
+                tileSource: { type:"image", url:"../../test/data/hdr/p3.png" },
+            },
+            {
+                text: "HDR: 16 bit-per-color PNG",
+                tileSource: { type:"image", url:"../../test/data/hdr/gg16.png" , buildPyramid: true},
+            },
         ];
         const viewers = [
                 {   version: "dao251 'canvas'",
@@ -282,7 +289,7 @@
                 showFlipControl: true,
 
                 rotationIncrement: 22.5,
-                // zoomPerScroll: Math.sqrt(Math.sqrt(Math.SQRT2)),   // "slow" mouse wheel
+                zoomPerScroll: Math.sqrt(Math.sqrt(Math.SQRT2)),   // "slow" mouse wheel
                 // zoomPerScroll: Math.sqrt(Math.SQRT2),
 
                 pixelsPerArrowPress: 39.4,   // simulate DPR misalignments
