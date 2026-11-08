@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Wide-gamut & HDR test</title>
+  <script src="../../build/openseadragon/openseadragon.js"></script>
+</head>
+<body>
+<div id="supported"></div>
+<div id="container"></div>
+
+<script>
+
+    OpenSeadragon.colorOptions = { colorSpace: "display-p3", colorType:"float16" };
+
+    document.getElementById("supported").innerText = JSON.stringify(OpenSeadragon.colorOptions);
+
+
+</script>
+</body>
+</html>
