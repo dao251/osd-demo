@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en">   
 <head>
+    <meta charset="UTF-8">
     <title>Drawer Demo</title>
     <style type="text/css">
         html, body{
@@ -32,6 +33,12 @@
             padding: 10px;
             gap: 5px;
         }
+        .attrib {
+            font-family: Verdana, Geneva, Tahoma, sans-serif;
+            font-style: italic;
+            font-size: 10px;
+            padding: 8px 0;
+        }
     </style>
 </head>
 <body>
@@ -43,6 +50,7 @@
         <form id="control_form" onsubmit="return false;" style="width: 200px; height: 600px; display:flex; flex-direction:column;">
             <div style="width: 200px; display:flex; flex-direction:column; gap:2px;">
                 <select id="images" onchange="reloadPage()"></select>
+                <div id="attrib" class="attrib"></div>
                 <div>OSD version/drawer:</div>
                 <div>&lt;-<select id="viewer0" onchange="reloadPage()"></select></div>
                 <div>Compare to:</div>
@@ -131,11 +139,23 @@
                 tileSource: {
                     tileSource: "../../test/data/monalisa.dzi",
                 },
-                text: "DZI Mona Lisa: https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg (tiled)",
+                text: "DZI: Mona Lisa",
+                attrib: `
+                    Mona Lisa by Leonardo da Vinci<br>
+                    source: <a href="https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg" target="_blank">Wikimedia</a> <br>
+                    file: JPEG 7479×11146 90MB<br>
+                    256×256 PNG tiles, no overlaps
+                `,
                 clip: [ 2000, 2000, 2000, 4000 ],
             },
             {
-                text: "DZI BBlue : 1000x1000 (256x256 PNG tiles)",
+                text: "DZI: BBlue",
+                attrib: `
+                    ( red flash simulates placeholder )<br>
+                    source: <a href="https://github.com/openseadragon/openseadragon/blob/master/test/data/BBlue.png" target="_blank">OpenSeadragon</a> <br>
+                    file: PNG 1000×1000 19KB<br>
+                    256×256 PNG tiles, no overlaps
+                `,
                 tileSource: {
                     tileSource: "../../test/data/bblue.dzi",
                     placeholderFillStyle: "red",
@@ -143,7 +163,13 @@
                 clip: [ 200, 200, 500, 500 ],
             },
             {
-                text: "IIP: Huge WSI slide (https://iipimage.sourceforge.io/2023/03/ome-tiff-whole-slide-microscopy)",
+                text: "IIP: WSI slide",
+                attrib: `
+                    WSI slide ( Paul Felts, CC-BY-4.0 )<br>
+                    source: <a href="https://openseadragon.github.io/examples/tilesource-iip/" target="_blank">OME-TIFF image repository</a> <br>
+                    file: OME-TIFF 96999×45667<br>
+                    256×256 PNG tiles, no overlaps
+                `,
                 tileSource: {
                     tileSource: {
                         iipsrv: "https://merovingio.c2rmf.cnrs.fr/fcgi-bin/iipsrv.fcgi",
@@ -160,12 +186,24 @@
                 clip: [ 20000, 15000, 10000, 10000],
             },
             {
-                text: 'DZI Grid: 1px grid (every 8px)',
+                text: 'DZI: BW grid',
+                attrib: `
+                    8px grid with 1px grid lines<br>
+                    source: <a href="https://github.com/dao251/osd-demo/blob/main/test/data/8px_grid_4096.png" target="_blank">This repository</a> <br>
+                    file: PNG 40969×4096 72KB<br>
+                    256×256 PNG tiles, no overlaps
+                `,
                 tileSource: "../../test/data/8px_grid.dzi",
                 clip: [ 1000, 1000, 1000, 1000 ],
             },
             {
-                text: "OpenStreetMap (non-CORS tile provider https://tile.memomaps.de/tilegen/)",
+                text: "OSM: non-CORS server",
+                attrib: `
+                    non-CORS-aware OSM TileSource<br>
+                    source: <a href="https://memomaps.de" target="_blank">MeMoMaps.de</a> <br>
+                    file: 67108864×67108864<br>
+                    256×256 PNG tiles, no overlaps
+                `,
                 tileSource: {
                     type: 'openstreetmaps', width: 67108864, height: 67108864,
                     tilesUrl: "https://tile.memomaps.de/tilegen/", // non-CORS
@@ -177,19 +215,42 @@
                     tileSource: "https://openseadragon.github.io/example-images/duomo/duomo.dzi",
                     loadTilesWithAjax: true,
                 },
-                text: "DZI Duomo (1px overlap): https://www.flickr.com/photos/projectese/7993440342/ ",
+                text: "DZI: Duomo",
+                attrib: `
+                    Large film scan by Dario Morelli<br>
+                    source: <a href="https://www.flickr.com/photos/projectese/7993440342/" target="_blank">Flickr</a> <br>
+                    file: 13920×10200<br>
+                    254×254 PNG tiles, 1px overlap
+                `,
                 clip: [ 1024, 768, 3072, 4096 ],
             },
             {
+                attrib: `
+                    Stacked images #0 and #1<br>
+                `,
                 tileSource: [
                     "../../test/data/monalisa.dzi",
                     "../../test/data/bblue.dzi",
                 ],
                 text: "Stacked images",
             },
+            // {
+            //     text: "Simple Image: Mona Lisa",
+            //     attrib: `
+            //         looong download, not cached by browser<br>
+            //         source: <a href="https://commons.wikimedia.org/wiki/File:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg" target="_blank">Wikimedia</a> <br>
+            //         file: JPEG 7479×11146 90MB<br>
+            //     `,
+            //     tileSource: { type:"image", url:"../../test/data/MonaLisa.jpg" , buildPyramid: true, tileWidth: 251, tileHeight: 367 },
+            // },
             {
-                text: "Simple Image: Mona Lisa",
-                tileSource: { type:"image", url:"../../test/data/MonaLisa.jpg" , buildPyramid: true, tileWidth: 251, tileHeight: 367, useCanvas: true },
+                text: "Simple Image: Irises",
+                attrib: `
+                    Vincent van Gogh (loong download)<br>
+                    source: <a href="https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Irises_(1889).jpg" target="_blank">Wikimedia</a> <br>
+                    file: JPEG 9600×7413 29MB<br>
+                `,
+                tileSource: { type:"image", url:"../../test/data/Irises.jpg" , buildPyramid: true, tileWidth: 251, tileHeight: 367 },
             },
             {
                 tileSource: [
@@ -197,21 +258,41 @@
                     { type: "image", url: "../../test/data/green_100.png"},
                     { type: "image", url: "../../test/data/blue_50.png"},
                 ],
-                text: "Stacked with transparency: 50% B over 100% G over 100% R ",
+                text: "Simple Images: Stacked",
+                attrib: `
+                    50% translucent B over 100% G over 100% R<br>
+                    source: <a href="https://github.com/dao251/osd-demo/blob/main/test/data/blue_50.png" target="_blank">This repository</a> <br>
+                    files: PNG 1000×1000 40-70KB
+                `,
             },
             {
                 tileSource: {
                     tileSource: "https://iiif.wellcomecollection.org/image/B2864444X.JP2/info.json",
                     loadTilesWithAjax: true,
                 },
-                text: "IIIF: https://iiif.wellcomecollection.org/image/B2864444X.JP2/info.json",
+                text: "IIIF: Medieval manuscript",
+                attrib: `
+                    Medieval manuscript (1770-?)<br>
+                    source: <a href="https://wellcomecollection.org/works/qjwe58rd/images?id=fwp8wy9g" target="_blank">Wellcome Collection</a> <br>
+                    file: 7020×4191<br>
+                `,
             },
             {
-                text: "Wide Gamut: Display-P3",
+                text: "Simple Image: Wide Gamut",
+                attrib: `
+                    in case your computer+GPU+browser+monitor support wide color gamut, you will see 'P3' text using 'dao251' drawers<br>
+                    otherwise - pure red sRGB square<br>
+                    file: PNG (Display-P3) 1024×1024 17KB
+                `,
                 tileSource: { type:"image", url:"../../test/data/hdr/p3.png" },
             },
             {
-                text: "HDR: 16 bit-per-color PNG",
+                attrib: `
+                    in case your computer+GPU+browser+monitor support HDR (10bit), you will see smooth gradient using 'dao251/canvas' drawer;<br>
+                    otherwise - diagonal banding<br>
+                    file: 16bpc PNG 1024×1024 40KB
+                `,
+                text: "HDR: 16bpc PNG",
                 tileSource: { type:"image", url:"../../test/data/hdr/gg16.png" , buildPyramid: true},
             },
         ];
@@ -313,6 +394,7 @@
             imageSelector.add(new Option( images[i].text, i));
         }
         imageSelector.value = demoImage;
+        document.getElementById("attrib").innerHTML = images[demoImage].attrib;
 
         for(let i = 0; i < viewers.length; i++){
             const v = viewers[i]
@@ -439,8 +521,9 @@
         window.smooth  = v =>
             OSD.viewers.forEach( o => {
                 o.viewer.drawer.setImageSmoothingEnabled?.(v);          // OSD: the option is set per Drawer
-                [...Array(o.viewer.world.getItemCount()).keys()]        // DAO: the option is set per TiledImage
-                    .forEach(i => {o.viewer.world.getItemAt(i).imageSmoothingEnabled = v})
+                o.viewer.world.getItemAt(0).imageSmoothingEnabled = v ? 'high': false
+                // [...Array(o.viewer.world.getItemCount()).keys()]        // DAO: the option is set per TiledImage
+                //     .forEach(i => {o.viewer.world.getItemAt(i).imageSmoothingEnabled = v ? 'high': false})
             } )
 
         const unwraps = [];
